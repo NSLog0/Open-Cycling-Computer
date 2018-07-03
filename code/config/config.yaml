@@ -1,7 +1,7 @@
 altitude_home: 0.0
 altitude_home_units: m
 ble_hr_addr: D6:90:A8:08:F0:E4
-ble_hr_name: Tacx HRB 04741
+ble_hr_name: b'Tacx HRB 04741'
 ble_sc_addr: FD:DF:0E:4E:76:CF
 ble_sc_name: Lezyne S&C 249
 layout_path: layouts/default.yaml

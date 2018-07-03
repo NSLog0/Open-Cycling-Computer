@@ -6,7 +6,6 @@ from units import units
 import logging
 import os
 import pygame
-import struct
 import sys
 import time
 import yaml
@@ -109,7 +108,12 @@ class layout():
         if (self.font == ""):
             self.font = None
         self.fg_colour_rgb = self.current_page['fg_colour']
-        self.fg_colour = struct.unpack('BBB', self.fg_colour_rgb.decode('hex'))
+        fg_colour_rgb = self.fg_colour_rgb
+        if fg_colour_rgb[0] == '#':
+            fg_colour_rgb = fg_colour_rgb[1:]
+        r, g, b = fg_colour_rgb[:2], fg_colour_rgb[2:4], fg_colour_rgb[4:]
+        r, g, b = [int(n, 16) for n in (r, g, b)]
+        self.fg_colour = (r, g, b)
         for field in self.current_page['fields']:
             self.current_function_list.append(field['function'])
             try:
@@ -167,7 +171,7 @@ class layout():
         self.render(self.screen)
 
     def make_image_key(self, image_path, value):
-        suffix = "_" + unicode(value)
+        suffix = "_" + format(value)
         extension = image_path[-4:]
         name = image_path[:-4]
         return (name + suffix + extension)
@@ -183,7 +187,7 @@ class layout():
                     value = field['text']
                 except KeyError:
                     value = ""
-            uv = unicode(value)
+            uv = format(value)
             variable = None
             # Get icon image
             try:
@@ -374,14 +378,14 @@ class layout():
         self.use_main_page()
 
     def ed_decrease(self):
-        u = unicode(self.occ.rp.params["variable_value"])
+        u = format(self.occ.rp.params["variable_value"])
         i = self.occ.rp.params["editor_index"]
         ui = u[i]
         if ui == "0":
             ui = "9"
         else:
             try:
-                ui = unicode(int(ui) - 1)
+                ui = format(int(ui) - 1)
             except ValueError:
                 pass
         un = u[:i] + ui + u[i + 1:]
@@ -389,14 +393,14 @@ class layout():
         self.force_refresh()
 
     def ed_increase(self):
-        u = unicode(self.occ.rp.params["variable_value"])
+        u = format(self.occ.rp.params["variable_value"])
         i = self.occ.rp.params["editor_index"]
         ui = u[i]
         if ui == "9":
             ui = "0"
         else:
             try:
-                ui = unicode(int(ui) + 1)
+                ui = format(int(ui) + 1)
             except ValueError:
                 pass
         un = u[:i] + ui + u[i + 1:]
@@ -404,7 +408,7 @@ class layout():
         self.force_refresh()
 
     def ed_next(self):
-        u = unicode(self.occ.rp.params["variable_value"])
+        u = format(self.occ.rp.params["variable_value"])
         i = self.occ.rp.params["editor_index"]
         if u[0] == '0':
             u = u[1:]
@@ -423,7 +427,7 @@ class layout():
         self.force_refresh()
 
     def ed_prev(self):
-        u = unicode(self.occ.rp.params["variable_value"])
+        u = format(self.occ.rp.params["variable_value"])
         i = self.occ.rp.params["editor_index"]
         i -= 1
         if i < 0:
@@ -514,7 +518,7 @@ class layout():
                 page_no = self.max_settings_id
             if page_no > self.max_settings_id:
                 page_no = 0
-        for p, page in self.page_list.iteritems():
+        for p, page in self.page_list.items():
             t = page['type']
             n = page['number']
             if t == page_type and n == page_no:

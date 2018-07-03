@@ -14,7 +14,7 @@ import time
 class ble_hr(Peripheral, threading.Thread):
     # FIXME - replace with proper service & characteristic scan
     HR_HANDLE = 0x000f  # FIXME - explain
-    HR_ENABLE_HR = "10"    # FIXME - explain, try "01" is fails
+    HR_ENABLE_HR = b'\x10'    # FIXME - explain, try "01" is fails
     ## @var WAIT_TIME
     # Time of waiting for notifications in seconds
     WAIT_TIME = 1
@@ -65,7 +65,7 @@ class ble_hr(Peripheral, threading.Thread):
         self.l.debug('[BLE_HR] Set notifications {}'.format(enable))
         try:
             self.writeCharacteristic(self.HR_HANDLE, self.HR_ENABLE_HR, enable)
-        except BTLEException, e:
+        except BTLEException as e:
             if str(e) == "Helper not started (did you call connect()?)":
                 self.l.error('[BLE_HR] Set notifications failed: {}'.format(e))
             else:
@@ -94,7 +94,7 @@ class ble_hr(Peripheral, threading.Thread):
                 if self.waitForNotifications(self.WAIT_TIME):
                     self.heart_rate = self.delegate.heart_rate
                     self.time_stamp = self.delegate.time_stamp
-            except BTLEException, e:
+            except BTLEException as e:
                 if str(e) == 'Device disconnected':
                     self.l.info('[BLE_HR] Device disconnected: {}'.format(self.name))
                     self.connected = False
@@ -104,7 +104,7 @@ class ble_hr(Peripheral, threading.Thread):
                     time.sleep(self.EXCEPTION_WAIT_TIME)
                 else:
                     raise
-            except AttributeError, e:
+            except AttributeError as e:
                 if str(e) == "'NoneType' object has no attribute 'poll'":
                     self.l.debug('[BLE_HR] btle raised AttributeError exception {}'.format(e))
                     # We don't want to call waitForNotifications and fail too often

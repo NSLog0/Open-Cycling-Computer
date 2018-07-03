@@ -1,5 +1,5 @@
 import time
-from ble import ble
+from ble_sc import ble_sc
 from bluepy.btle import BTLEException
 from wheel import wheel as w
 
@@ -10,17 +10,19 @@ if __name__ == '__main__':
         connected = False
         while not connected:
             try:
-                # print "Initialising BLE device..."
-                lez = ble(False, "fd:df:0e:4e:76:cf")
-                # print "Starting BLE thread..."
-                print "Battery level: ", lez.get_battery_level()
+                print("Initialising BLE device...")
+                lez = ble_sc("fd:df:0e:4e:76:cf")
+                print("Starting BLE thread...")
+                # print "Device name: ", ble_hr.get_device_name()
+                print("Battery level: ".format(lez.get_battery_level()))
                 lez.start()
                 time.sleep(1)
                 connected = lez.connected
-            except BTLEException:
-                print ".....sensor is not on? Waiting..."
+            except BTLEException as e:
+                print("Error: {}".format(e))
+                print(".....sensor is not on? Waiting...")
 
-        print ".....sensor started!"
+        print(".....sensor started!")
         NOTIFICATION_EXPIRY_TIME = 2.0
         while True:
                 data = lez.get_data()
@@ -30,21 +32,21 @@ if __name__ == '__main__':
                 cadence = data['cadence']
 
                 # handleNotification() was called
-                print "TS: {}".format(time.time())
+                print("TS: {}".format(time.time()))
                 if (time.time() - wheel_time_stamp) > NOTIFICATION_EXPIRY_TIME:
-                    print "[EXPIRED] ",
+                    print("[EXPIRED] "),
                 speed = 3.6 * WHEEL_CIRC_700x25 / (wheel_rev_time + 0.00001)
                 # print "Speed / RPM: {:10.3f}".format(speed / val.crank_rpm)
-                print "TS: {}, speed: {:10.3f} km/h".format(wheel_time_stamp, speed)
+                print("TS: {}, speed: {:10.3f} km/h".format(wheel_time_stamp, speed))
                 if (time.time() - cadence_time_stamp) > NOTIFICATION_EXPIRY_TIME:
-                    print "[EXPIRED] ",
-                print "TS: {}, RPM: {:10.3f}".format(cadence_time_stamp, cadence)
+                    print("[EXPIRED] "),
+                print("TS: {}, RPM: {:10.3f}".format(cadence_time_stamp, cadence))
                 time.sleep(1)
 
     except (KeyboardInterrupt, SystemExit):
         if connected:
             try:
-                print ("Lez stop")
+                print("Lez stop")
                 lez.stop()
             except:
                 pass

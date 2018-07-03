@@ -69,7 +69,7 @@ class ble_sc(Peripheral, threading.Thread):
         self.l.debug('[BLE_HR] Set notifications {}'.format(enable))
         try:
             self.writeCharacteristic(self.CSC_HANDLE, self.CSC_ENABLE_SC, enable)
-        except BTLEException, e:
+        except BTLEException as e:
             if str(e) == "Helper not started (did you call connect()?)":
                 self.l.error('[BLE_HR] Set notifications failed: {}'.format(e))
             else:
@@ -100,7 +100,7 @@ class ble_sc(Peripheral, threading.Thread):
                     self.wheel_rev_time = self.delegate.wheel_rev_time
                     self.cadence_time_stamp = self.delegate.cadence_time_stamp
                     self.cadence = self.delegate.cadence
-            except BTLEException, e:
+            except BTLEException as e:
                 if str(e) == 'Device disconnected':
                     self.l.info('[BLE_SC] Device disconnected: {}'.format(self.name))
                     self.connected = False
@@ -110,7 +110,7 @@ class ble_sc(Peripheral, threading.Thread):
                     time.sleep(self.EXCEPTION_WAIT_TIME)
                 else:
                     raise
-            except AttributeError, e:
+            except AttributeError as e:
                 if str(e) == "'NoneType' object has no attribute 'poll'":
                     self.l.debug('[BLE_SC] btle raised AttributeError exception {}'.format(e))
                     # We don't want to call waitForNotifications and fail too often

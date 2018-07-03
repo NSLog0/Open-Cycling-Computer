@@ -160,7 +160,7 @@ class sensors(threading.Thread):
                         'ble_sc'].get_device_name()
                     self.l.info("[SE] Starting BLE speed & cadence thread")
                     self.sensors['ble_sc'].start()
-                except BTLEException, e:
+                except BTLEException as e:
                     self.l.info(
                         "[SE] Connecion to BLE speed & cadence sensor failed: {}".format(e))
                 else:

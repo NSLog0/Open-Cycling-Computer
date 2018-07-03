@@ -557,7 +557,7 @@ class ride_parameters():
 
     def add_zero(self, value):
         if value < 10:
-            value = "0" + unicode(value)
+            value = "0" + format(value)
         return value
 
     def update_hms(self, param):

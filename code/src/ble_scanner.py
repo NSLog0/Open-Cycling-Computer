@@ -107,8 +107,9 @@ class ble_scanner(object):
         self.ble_dev_helper(4, self.rp.params["variable"])
 
 
+#TODO Currently doesn't work as it is OCC dependent
 if __name__ == '__main__':
     ble = ble_scanner()
     ble.scan()
     for i in ble.get_dev_list():
-        print (i)
+        print(i)
